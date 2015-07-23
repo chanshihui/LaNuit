@@ -57,5 +57,10 @@
     android:id="@+id/searchBtn" />
 
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="home page"
+        android:id="@+id/textView22" />
 </LinearLayout>

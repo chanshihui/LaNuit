@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -80,7 +81,7 @@ public class find extends Fragment {
     {
         AsyncHttpClient client = new AsyncHttpClient();
         // establish connection to webservice
-        client.get("http://192.168.1.9:8080/laNuitWS/SearchSupper/Search", params, new JsonHttpResponseHandler()
+        client.get("http://192.168.1.98:8080/laNuitWS/SearchSupper/Search", params, new JsonHttpResponseHandler()
         {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response)
@@ -96,7 +97,7 @@ public class find extends Fragment {
                         supperList.listOfSupper.add(newSupper);
                         supperList.supperName.add(newSupper.getName());
 
-                         //Toast.makeText(getActivity().getApplicationContext(), supperList.listOfSupper.size().toString(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity().getApplicationContext(), supperList.listOfSupper.size().toString(), Toast.LENGTH_SHORT).show();
                     }
 
                     catch (JSONException e) {
@@ -108,18 +109,3 @@ public class find extends Fragment {
     }
 
 }
-
-
-   /*
-    public void reverseGeocoding()
-    {
-        String location = locationET.getText().toString();
-        GeoCodes gc = new GeoCodes();
-        double [] convertedLocation = new double[2];
-        //Toast.makeText(getActivity().getApplicationContext(), location, Toast.LENGTH_LONG).show();
-        convertedLocation = gc.convertLocationName(location);
-       String test = convertedLocation[0] + "";
-        Toast.makeText(getActivity().getApplicationContext(), test, Toast.LENGTH_LONG).show();
-
-    }
-    */

@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -24,7 +25,6 @@ public class Result extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         rootview = inflater.inflate(R.layout.result_ui, container, false);
-
         ListAdapter supperList = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, supper.supperName);
         ListView supperListView = (ListView)rootview.findViewById(R.id.supperList);
         supperListView.setAdapter(supperList);

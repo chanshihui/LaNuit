@@ -25,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -78,11 +79,10 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
-    private CallbackManager callbackManager;
     private TextView textView;
+    private Button logoutbtn;
 
-    private AccessTokenTracker accessTokenTracker;
-    private ProfileTracker profileTracker;
+    User userList;
 
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
         @Override
@@ -107,28 +107,6 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //here start
-        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
-
-        accessTokenTracker= new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
-
-            }
-        };
-
-        profileTracker = new ProfileTracker() {
-            @Override
-            protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
-                displayMessage(newProfile);
-            }
-        };
-
-        accessTokenTracker.startTracking();
-        profileTracker.startTracking();
-        //here end
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
@@ -239,8 +217,24 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mDrawerList.setLayoutManager(layoutManager);
         mDrawerList.setHasFixedSize(true);
+     // logoutbtn = (Button) view.findViewById(R.id.btnLogout);
+        List<NavigationItem> navigationItems = new ArrayList<NavigationItem>();
+        if(userList.listOfUser.size()>0)
+        {
+            switch (userList.listOfUser.get(0).getRole()) {
+                case "A":
+                    navigationItems = getAdminMenu();
+                    break;
+                case "U":
+                    navigationItems = getMenu();
+                    break;
+            }
 
-        final List<NavigationItem> navigationItems = getMenu();
+        }else{
+            navigationItems = getPublicMenu();
+        }
+
+      // final List<NavigationItem> navigationItems = getMenu();
         NavigationDrawerAdapter adapter = new NavigationDrawerAdapter(navigationItems);
         adapter.setNavigationDrawerCallbacks(this);
         mDrawerList.setAdapter(adapter);
@@ -265,11 +259,27 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         selectItem(position);
     }
 
+
     public List<NavigationItem> getMenu() {
+       List<NavigationItem> items = new ArrayList<NavigationItem>();
+        items.add(new NavigationItem("Logout", getResources().getDrawable(R.drawable.key)));
+        items.add(new NavigationItem("Home", getResources().getDrawable(R.drawable.ic_home)));
+        items.add(new NavigationItem("Find User Supper", getResources().getDrawable(R.drawable.ic_action_search)));
+        return items;
+    }
+
+    public List<NavigationItem> getAdminMenu() {
+        List<NavigationItem> items = new ArrayList<NavigationItem>();
+        items.add(new NavigationItem("Logout", getResources().getDrawable(R.drawable.key)));
+        items.add(new NavigationItem("Manage supper", getResources().getDrawable(R.drawable.ic_action_search)));
+        return items;
+    }
+
+    public List<NavigationItem> getPublicMenu() {
         List<NavigationItem> items = new ArrayList<NavigationItem>();
         items.add(new NavigationItem("Login", getResources().getDrawable(R.drawable.key)));
         items.add(new NavigationItem("Home", getResources().getDrawable(R.drawable.ic_home)));
-        items.add(new NavigationItem("Find Supper", getResources().getDrawable(R.drawable.ic_action_search)));
+        items.add(new NavigationItem("Find Public Supper", getResources().getDrawable(R.drawable.ic_action_search)));
         return items;
     }
 
@@ -324,6 +334,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         });
 
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
+
+
     }
 
     private void selectItem(int position) {
@@ -377,42 +389,37 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
+      //  LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
         textView = (TextView) view.findViewById(R.id.txtUsername);
+        if(userList.listOfUser.size()>0)
+        {
+            textView.setText(userList.listOfUser.get(0).getName());
+        }
+        else{
+            textView.setText("");
+         }
 
-        loginButton.setReadPermissions("user_friends");
+      /*  loginButton.setReadPermissions("user_friends");
         loginButton.setFragment(this);
-        loginButton.registerCallback(callbackManager, callback);
+        loginButton.registerCallback(callbackManager, callback); */
 
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+     //   callbackManager.onActivityResult(requestCode, resultCode, data);
 
     }
 
     private void displayMessage(Profile profile){
         if(profile != null){
             textView.setText(profile.getName());
+
         }else{
-            textView.setText("");
+           // textView.setText("");
         }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        accessTokenTracker.stopTracking();
-        profileTracker.stopTracking();
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Profile profile = Profile.getCurrentProfile();
-        displayMessage(profile);
-    }
 }

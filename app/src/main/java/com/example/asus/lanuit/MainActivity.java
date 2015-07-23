@@ -2,9 +2,6 @@ package com.example.asus.lanuit;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -12,11 +9,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class MainActivity extends ActionBarActivity
@@ -28,7 +34,8 @@ public class MainActivity extends ActionBarActivity
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Toolbar mToolbar;
     private ListView drawerListView;
-
+    User userList;
+    Supper supperList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,11 +47,21 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_drawer);
 
-
-
         // Set up the drawer.
         mNavigationDrawerFragment.setup(R.id.fragment_drawer, (DrawerLayout) findViewById(R.id.drawer), mToolbar);
       //  mNavigationDrawerFragment.setUserData("John Doe", "johndoe@doe.com", BitmapFactory.decodeResource(getResources(), R.drawable.avatar));
+      /*  Button logoutbtn = (Button) findViewById(R.id.fragment_drawer).findViewById(R.id.btnLogout);
+        if(userList.listOfUser.size()>0)
+        {
+            if(userList.listOfUser.get(0).getId() == 0 ){
+                //facebook login user
+                logoutbtn.setVisibility(View.VISIBLE);
+            }else{
+                logoutbtn.setVisibility(View.INVISIBLE);
+            }
+        }else{
+            logoutbtn.setVisibility(View.INVISIBLE);
+        } */
     }
 
     @Override
@@ -52,16 +69,41 @@ public class MainActivity extends ActionBarActivity
         // update the main content by replacing fragments
         //  Toast.makeText(this, "Menu item selected -> " + position, Toast.LENGTH_SHORT).show();
         Fragment fragment = null;
-        switch (position) {
-            case 0:
-                fragment = new login();
-                break;
-            case 1:
-                fragment = new home();
-                break;
-            case 2:
-                fragment = new find();
-                break;
+        if (userList.listOfUser.size() > 0) {
+            if (userList.listOfUser.get(0).getRole().equals("U")) { //user
+                switch (position) {
+                    case 0:
+                        fragment = new login();
+                        break;
+                    case 1:
+                        fragment = new home();
+                        break;
+                    case 2:
+                        fragment = new find();
+                        break;
+                }
+            } else {
+                switch (position) {
+                    case 0:
+                        fragment = new login();
+                        break;
+                    case 1:
+                        fragment = new mainshop();
+                        break;
+                }
+            }
+        } else {
+            switch (position) {
+                case 0:
+                    fragment = new login();
+                    break;
+                case 1:
+                    fragment = new find();
+                    break;
+                case 2:
+                    fragment = new find();
+                    break;
+            }
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -106,7 +148,6 @@ public class MainActivity extends ActionBarActivity
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
 }

@@ -2,9 +2,6 @@ package com.example.asus.lanuit;
 
 import java.util.ArrayList;
 
-/**
- * Created by ASUS on 24/6/2015.
- */
 public class Supper {
 
     private String name;
@@ -17,6 +14,7 @@ public class Supper {
     private String foodType;
 
     public static int arrayIndicator;
+
 
     public static ArrayList<Supper> listOfSupper = new ArrayList<Supper> ();
     public static ArrayList<String>supperName = new ArrayList<String>();
@@ -35,6 +33,34 @@ public class Supper {
         this.price= price;
     }
 
+    //shihui start
+    private int supID;
+    private String cuisine;
+
+    public int getSupID() {
+        return supID;
+    }
+
+    public void setSupID(int supID) {
+        this.supID = supID;
+    }
+
+    public String getcuisine() {
+        return cuisine;
+    }
+
+    public void setcuisine(String cuisine) {
+        this.cuisine = cuisine;
+    }
+
+    public Supper(int supID, String name, String cuisine, String foodType, String price) {
+        this.supID = supID;
+        this.name = name;
+        this.cuisine = cuisine;
+        this.foodType = foodType;
+        this.price = price;
+    }
+    //shihui end
     /*
     public void updateIndicator(String textPosition)
     {
